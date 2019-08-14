@@ -1,16 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "sample-chart.fullname" . }}
-  labels:
-{{ include "sample-chart.labels" . | indent 4 }}
+  name: SampleDockerApp
 spec:
-  type: {{ .Values.service.type }}
+  type: LoadBalancer
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+  - port: 80
   selector:
-    app.kubernetes.io/name: {{ include "sample-chart.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app: SampleDockerApp
