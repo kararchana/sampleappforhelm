@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: SampleDockerApp
-        image: sampledockerapp.azurecr.io/reddivaripriyanka/sampleappforhelm:#{Build.BuildId}#
+        image: samplecontainer11.azurecr.io/kararchana/sampleappforhelm:#{Build.BuildId}#
         ports:
         - containerPort: 80
         env:
@@ -23,7 +23,7 @@ spec:
               fieldRef:
                 fieldPath: metadata.name
       imagePullSecrets:
-      - name: dockerapp
+      - name: demoaks
 ---
 apiVersion: v1
 kind: Service
