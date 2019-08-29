@@ -3,10 +3,15 @@ kind: Deployment
 metadata:
   name: SampleDockerApp-deployment
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: SampleDockerApp
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
   template:
     metadata:
       labels:
@@ -15,8 +20,16 @@ spec:
       containers:
       - name: SampleDockerApp
         image: samplecontainer11.azurecr.io/kararchana/sampleappforhelm:#{Build.BuildId}#
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
+        resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
         env:
           - name: PODNAME
             valueFrom:
@@ -33,9 +46,11 @@ spec:
   type: LoadBalancer
   ports:
   - port: 80
+    targetPort: 9001
   selector:
     app: SampleDockerApp
-    apiVersion: extensions/v1beta1
+---
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: SampleDockerApp
@@ -43,7 +58,7 @@ metadata:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: SampleDockerApp.8d00e524230642a99b15.westus.aksapp.io                                          
+  - host: SampleDockerApp.1266e945191348aba61c.eastus2.aksapp.io
     http:
       paths:
       - backend:
@@ -51,7 +66,6 @@ spec:
           servicePort: 80
         path: /
 ---
-
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
