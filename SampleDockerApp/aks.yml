@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: SampleDockerApp-deployment
+  name: sampledockerapp-deployment
 spec:
   selector:
     matchLabels:
-      app: SampleDockerApp
+      app: sampledockerapp
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,10 +15,10 @@ spec:
   template:
     metadata:
       labels:
-        app: SampleDockerApp
+        app: sampledockerapp
     spec:
       containers:
-      - name: SampleDockerApp
+      - name: sampledockerapp
         image: samplecontainer11.azurecr.io/kararchana/sampleappforhelm:#{Build.BuildId}#
         imagePullPolicy: Always
         ports:
@@ -41,35 +41,35 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: SampleDockerApp
+  name: sampledockerapp
 spec:
   type: LoadBalancer
   ports:
   - port: 80
     targetPort: 9001
   selector:
-    app: SampleDockerApp
+    app: sampledockerapp
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: SampleDockerApp
+  name: sampledockerapp
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: SampleDockerApp.1266e945191348aba61c.eastus2.aksapp.io
+  - host: sampledockerapp.1266e945191348aba61c.eastus2.aksapp.io
     http:
       paths:
       - backend:
-          serviceName: SampleDockerApp
+          serviceName: sampledockerapp
           servicePort: 80
         path: /
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: SampleDockerApp
+  name: sampledockerapp
   namespace: default
 spec:
   minReplicas: 5
@@ -77,5 +77,5 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: SampleDockerApp-deployment
+    name: sampledockerapp-deployment
   targetCPUUtilizationPercentage: 10
